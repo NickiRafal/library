@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Usuń Czytelnika</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<table>
+    <tr>
+        <td><h1>Czytelnicy</h1></td>
+        <td><h1>Usuń Czytelnika</h1></td>
+    </tr>
+    <tr>
+        <td><table id="readersTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Data założenia konta</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Tutaj zostaną wstawione dane z API -->
+            </tbody></table>
+        </td>
+        <td><form id="deleteReaderForm">
+            <label for="readerId">ID Czytelnika:</label>
+            <input type="text" id="readerId" name="readerId">
+            <button type="submit">Usuń</button>
+        </form></td>
+
+    </tr>
+
+</table>
+
+<div id="cent"><button><a href="index.html">Wstecz</a></button></div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    // Obsłuż formularz usuwania czytelnika
+    document.querySelector("#deleteReaderForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const readerId = document.querySelector("#readerId").value;
+
+        fetch(`http://localhost:8081/library/readers/${readerId}`, {
+            method: "DELETE",
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    location.reload();
+                    // Usunięto czytelnika pomyślnie, odśwież stronę lub wykonaj inne działania
+                    alert("Czytelnik został usunięty.");
+                    location.reload(); // Odśwież stronę
+                } else if (response.status === 404) {
+                    alert("Czytelnik o podanym ID nie istnieje.");
+                } else {
+                    alert("Wystąpił błąd podczas usuwania czytelnika.");
+                }
+            })
+            .catch(error => {
+                console.error("Błąd podczas usuwania czytelnika:", error);
+            });
+
+    });
+    //pobierz użytkowników
+    fetch('http://localhost:8081/library/readers')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#readersTable tbody');
+
+            data.forEach(reader => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reader.id}</td>
+                    <td>${reader.firstName}</td>
+                    <td>${reader.lastName}</td>
+                    <td>${reader.accountCreationDate}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Błąd podczas pobierania danych z API:', error));
+
+</script>
+
+</body>
+</html>

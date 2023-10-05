@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Użytkownika</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+<body>
+<table><tr><th>
+    <h2>Tabela Czytelników</h2>
+
+</th><th>
+
+    <h2>Dodaj Czytelnika</h2>
+</th></tr>
+    <tr><th>
+        <table id="readersTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Data założenia konta</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Tutaj zostaną wstawione dane z API -->
+            </tbody>
+        </table>
+
+    </th><th>
+        <!-- Formularz do dodawania czytelnika -->
+
+        <form id="addReaderForm" action="http://localhost:8081/library/readers" method="POST">
+            <label for="firstName">Imię:</label>
+            <input type="text" id="firstName" name="firstName">
+            <label for="lastName">Nazwisko:</label>
+            <input type="text" id="lastName" name="lastName">
+            <label for="accountCreationDate">Data założenia konta:</label>
+            <input type="text" id="accountCreationDate" name="accountCreationDate">
+            <button type="submit">Dodaj</button>
+        </form>
+
+        <!-- Wynik zostanie wyświetlony tutaj -->
+        <div id="result"></div>
+
+
+    </th></tr>
+</table>
+<button><a href="index.html">Wstecz</a></button>
+
+
+<script src="jquery-3.7.1.min.js"></script>
+<script>
+    $("#addReaderForm").submit(function(e) {
+        e.preventDefault();
+        const data = {
+            firstName: $("#firstName").val(),
+            lastName: $("#lastName").val(),
+            accountCreationDate: $("#accountCreationDate").val()
+        };
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8081/library/readers",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function(data) {
+                $("#result").text("Czytelnik został dodany.");
+                // Wyczyść pola formularza po sukcesie
+                $("#firstName").val("");
+                $("#lastName").val("");
+                $("#accountCreationDate").val("");
+            },
+            dataType: "json"
+        });
+        location.reload();
+    });
+
+    //pobierz użytkowników
+    fetch('http://localhost:8081/library/readers')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#readersTable tbody');
+
+            data.forEach(reader => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reader.id}</td>
+                    <td>${reader.firstName}</td>
+                    <td>${reader.lastName}</td>
+                    <td>${reader.accountCreationDate}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Błąd podczas pobierania danych z API:', error));
+
+</script>
+</body>
+</html>

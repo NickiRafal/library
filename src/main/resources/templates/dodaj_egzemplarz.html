@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Library Controller</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+<body>
+<h1>Library Controller</h1>
+
+<!-- Formularz do dodawania egzemplarza książki -->
+<h2>Dodaj egzemplarz książki</h2>
+<form id="addBookCopyForm">
+    <label for="titleId">ID tytułu książki:</label>
+    <input type="number" id="titleId" name="titleId">
+    <label for="status">Status:</label>
+    <input type="text" id="status" name="status">
+    <button type="submit">Dodaj</button>
+</form>
+<div id="result"></div>
+<button><a href="index.html">Wstecz</a></button>
+<script src="jquery-3.7.1.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $("#addBookCopyForm").submit(function(e) {
+            e.preventDefault();
+
+            const titleId = $("#titleId").val();
+            const status = $("#status").val();
+
+            const data = {
+                title: {
+                    id: titleId
+                },
+                status: status
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8081/library/copies",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(data) {
+                    $("#result").text("Egzemplarz książki został dodany.");
+                    $("#titleId").val(""); // Wyczyść pole "ID tytułu książki"
+                    $("#status").val(""); // Wyczyść pole "Status"
+                },
+                dataType: "json"
+            });
+        });
+    });
+
+</script>
+
+</body>
+</html>

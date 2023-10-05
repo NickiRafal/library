@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Library Controller</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="config.js"></script>
+</head>
+<body>
+<table>
+    <tr>
+        <!-- Tabela użytkowników zagnieżdzona   -->
+        <th><h2>Czytelnicy</h2></th>
+        <!-- Tabela tytułów zagnieżdzona   -->
+        <th><h2>Tytuły książek</h2></th>
+        <!-- Tabela formularza   -->
+        <th><h1>Library Controller</h1></th>
+    </tr>
+
+    <tr>
+        <!-- Tabela użytkowników zagnieżdzona   -->
+        <th><!-- Tabela na użytkowników -->
+            <table id="readersTable">
+
+                <tr>
+                    <th>ID</th>
+                    <th>Imię</th>
+                    <th>Nazwisko</th>
+                </tr>
+                <tr>
+                <tbody>
+                <!-- Tutaj zostaną wstawione dane użytkowników -->
+                </tbody>
+        </tr>
+            </table>
+
+        <!-- Tabela tytułów zagnieżdzona   -->
+        <th><!-- Tabela na tytuły -->
+
+
+
+        <table id="copiesTable">
+            <th>Id</th>
+            <th>Tytuł</th>
+            <th>Dostępnych</th>
+            <tbody>
+            <!-- Dane będą tutaj wstawiane dynamicznie przez JavaScript -->
+            </tbody>
+        </table>
+
+
+        <!-- Tabela formularza   -->
+        <th><!-- Formularz do dodawania wypożyczenia -->
+
+            <form id="addLoanForm">
+                <label for="copyId">ID książki:</label>
+                <input type="number" id="copyId" name="copyId">
+                <label for="readerId">ID czytelnika:</label>
+                <input type="number" id="readerId" name="readerId">
+                <label for="loanDate">Data wypożyczenia:</label>
+                <input type="text" id="loanDate" name="loanDate">
+                <label for="returnDate">Data zwrotu:</label>
+                <input type="text" id="returnDate" name="returnDate">
+                <button type="submit">Wypożycz</button>
+            </form>
+            <div id="result"></div></th>
+    </tr>
+
+</table>
+</table>
+
+
+
+
+
+
+<div id="cent"><button><a href="index.html">Wstecz</a></button></div>
+<script src="jquery-3.7.1.min.js"></script>
+
+
+
+<script>
+
+    $(document).ready(function() {
+        $("#addLoanForm").submit(function(e) {
+            e.preventDefault();
+
+            const copyId = $("#copyId").val();
+            const readerId = $("#readerId").val();
+            const loanDate = $("#loanDate").val();
+            const returnDate = $("#returnDate").val();
+
+            // Tworzenie obiektu `data` z konwersją `copyId` na obiekt `BookCopy`
+            const data = {
+                copy: {
+                    id: copyId
+                },
+                reader: {
+                    id: readerId
+                },
+                loanDate: loanDate,
+                returnDate: returnDate
+            };
+
+            $.ajax({
+                type: "POST",
+                url: domain+'/loans',
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(data) {
+                    $("#result").text("Książka została wypożyczona.");
+                    $("#copyId").val("");
+                    $("#readerId").val("");
+                    $("#loanDate").val("");
+                    $("#returnDate").val("");
+                },
+                dataType: "json"
+            });
+        });
+    });
+
+
+    // Pobierz użytkowników
+    fetch(domain+'/readers')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#readersTable tbody');
+
+            data.forEach(reader => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reader.id}</td>
+                    <td>${reader.firstName}</td>
+                    <td>${reader.lastName}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Błąd podczas pobierania danych z API (czytelnicy):', error));
+
+    // Pobierz tytuły
+    fetch(domain + '/titles')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#titlesTable tbody');
+
+            data.forEach(title => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${title.id}</td>
+                    <td>${title.title}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Błąd podczas pobierania danych z API (tytuły):', error));
+
+
+        // Pobierz dane i wypełnij tabelę
+        fetch(domain + '/copies-count')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#copiesTable tbody');
+
+        data.forEach(row => {
+        const titleId = row[0];
+        const title = row[1];
+        const copiesCount = row[2];
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+
+                 <td>${titleId}</td>
+                <td>${title}</td>
+                <td>${copiesCount}</td>
+                    `;
+        tableBody.appendChild(newRow);
+    });
+    })
+        .catch(error => console.error('Błąd podczas pobierania danych z API:', error));
+
+
+</script>
+
+</body>
+</html>

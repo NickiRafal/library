@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Library Controller</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr><th>
+        <h1>Tabela z książkami</h1>
+
+    </th><th>
+        <h1>Library Controller</h1>
+
+    </th></tr>
+    <tr><th>
+        <div>
+
+            <table id="data-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tytuł</th>
+                    <th>Autor</th>
+                    <th>Rok publikacji</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+    </th>
+        <th>
+
+        <div>
+            <!-- Formularz do dodawania tytułu -->
+            <h2>Dodaj tytuł</h2>
+            <form id="addTitleForm">
+                <label for="title">Tytuł książki:</label>
+                <input type="text" id="title" name="title">
+                <label for="author">Autor:</label>
+                <input type="text" id="author" name="author">
+                <label for="publicationYear">Rok publikacji:</label>
+                <input type="text" id="publicationYear" name="publicationYear">
+                <button type="submit">Dodaj</button>
+            </form>
+        </div>
+
+    </th></tr>
+    </thead>
+
+</table>
+
+
+<!-- Wynik zostanie wyświetlony tutaj -->
+<div id="result"></div>
+<button><a href="index.html">Wstecz</a></button>
+<script src="jquery-3.7.1.min.js"></script>
+<script>
+$("#addTitleForm").submit(function(e) {
+e.preventDefault();
+const data = {
+title: $("#title").val(),
+author: $("#author").val(),
+publicationYear: $("#publicationYear").val()
+};
+$.ajax({
+type: "POST",
+url: "http://localhost:8081/library/titles",
+data: JSON.stringify(data),
+contentType: "application/json",
+success: function(data) {
+$("#result").text("Tytuł został dodany.");
+
+// Wyczyść pola formularza po sukcesie
+$("#title").val("");
+$("#author").val("");
+$("#publicationYear").val("");
+},
+dataType: "json"
+});
+ location.reload();
+});
+
+const apiUrl = 'http://localhost:8081/library/titles';
+const dataTable = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+
+function getTitles() {
+    fetch(apiUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then((data) => {
+            data.forEach((title) => {
+                const row = dataTable.insertRow();
+                const idCell = row.insertCell(0);
+                const titleCell = row.insertCell(1);
+                const authorCell = row.insertCell(2);
+                const publicationYearCell = row.insertCell(3);
+
+                idCell.innerHTML = title.id;
+                titleCell.innerHTML = title.title;
+                authorCell.innerHTML = title.author;
+                publicationYearCell.innerHTML = title.publicationYear;
+
+            });
+        })
+        .catch((error) => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+
+}
+
+getTitles();
+</script>
+</body>
+</html>

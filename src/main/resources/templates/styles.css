@@ -1,0 +1,95 @@
+/* Resetowanie domyślnych styli przeglądarek */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+h2{
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Stylizacja formularzy */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px #ccc;
+}
+
+form label {
+    display: block;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+
+#result {
+    margin-top: 15px;
+    text-align: center;
+}
+.button-container {
+    text-align: center; /* Wyśrodkuj zawartość poziomo */
+}
+
+button {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    width: 300px;
+    display: block; /* Aby przycisk zajmował całą dostępną szerokość */
+    margin: 0 auto; /* Wyśrodkuj przycisk w kontenerze poziomo */
+}
+button:hover{
+    background-color: gray;
+    color: white;
+}
+a{
+    color: black;
+    width: 300px;
+    text-decoration: none;
+}
+a:hover{
+    width: 300px;
+    color: white;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
