@@ -1,6 +1,7 @@
 package com.kodilla.kodillalibrary.service;
 
 import com.kodilla.kodillalibrary.domain.BookCopy;
+import com.kodilla.kodillalibrary.domain.Title;
 import com.kodilla.kodillalibrary.repository.BookCopyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class BookCopyService {
     public Iterable<BookCopy> getAllBookCopies() {
         return bookCopyRepository.findAll();
     }
-    public List<Object[]> getCountTheNumberOfAvailableCopies(){
+    public List<Title> getCountTheNumberOfAvailableCopies(){
         return bookCopyRepository.getCountTheNumberOfAvailableCopies();
     }
     public boolean updateBookCopyStatus(Long titleId) {
